@@ -8,7 +8,7 @@
 
 <script>
 import HelloWorld from '@/components/HelloWorld'
-import { getUerInfo } from '@/api/user'
+import { getUserInfo } from '@/api/user'
 
 export default {
   name: 'home',
@@ -17,7 +17,7 @@ export default {
   },
   methods: {
     handleClick () {
-      getUerInfo().then(res => {
+      getUserInfo('editor').then(res => {
         console.log(res)
       })
     }

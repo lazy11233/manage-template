@@ -1,8 +1,13 @@
-const routes = [
+const constantRouterMap = [
   {
     path: '/',
     name: 'home',
     component: () => import('@/views/Home')
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('@/views/login/index')
   },
   {
     path: '/about',
@@ -10,4 +15,5 @@ const routes = [
     component: () => import('@/views/About')
   }
 ]
-export default routes
+
+export default constantRouterMap
