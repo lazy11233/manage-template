@@ -1,18 +1,26 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
     <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <el-button type="primary" size="mini" @click="handleClick">点击获取用户信息</el-button>
+    <svg-icon icon-class="home"></svg-icon>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue';
+import HelloWorld from '@/components/HelloWorld'
+import { getUerInfo } from '@/api/user'
 
 export default {
   name: 'home',
   components: {
-    HelloWorld,
+    HelloWorld
   },
-};
+  methods: {
+    handleClick () {
+      getUerInfo().then(res => {
+        console.log(res)
+      })
+    }
+  }
+}
 </script>
