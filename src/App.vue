@@ -1,29 +1,29 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
     <router-view/>
   </div>
 </template>
+<script>
+import axios from '@/api/index'
 
-<style lang="scss">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-#nav {
-  padding: 30px;
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-    &.router-link-exact-active {
-      color: #42b983;
+export default {
+  data () {
+    return {
+      url: ''
+    }
+  },
+  methods: {
+    getImg () {
+      axios.request({
+        url: 'http://192.168.2.53:8080/api/v1/get_img?ImgId=7131b3c1-e2ff-4ccd-a36e-500636fa1ce8',
+        method: 'get',
+        responseType: 'blob'
+      }).then(res => {
+        const type = res.headers['content-type']
+        const bb = new Blob([res.data], { type })
+        this.url = URL.createObjectURL(bb)
+      })
     }
   }
 }
-</style>
+</script>

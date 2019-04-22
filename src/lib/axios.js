@@ -25,9 +25,8 @@ class HttpRequest {
     )
     instance.interceptors.response.use(
       response => {
-        const { data, status } = response
         delete this.queue[url]
-        return { data, status }
+        return response
       },
       error => {
         delete this.queue[url]

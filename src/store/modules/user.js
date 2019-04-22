@@ -1,12 +1,38 @@
 import { login, getUserInfo } from '@/api/user'
-import { setToken } from '@/lib/auth'
+import { setToken, remveToken } from '@/lib/auth'
+import { constantRoutes, asyncRoutes } from '@/router/router'
+
+const hasPermission = (route, roles) => {
+  if (route.meta && route.meta.roles) {
+    return roles.some(role => route.meta.roles.includes(role))
+  } else {
+    // 如果没有meta属性，就不需要权限
+    return true
+  }
+}
+
+const filterAsyncRoute = (routes, roles) => {
+  const res = []
+  routes.forEach(route => {
+    const tmp = { ...route }
+    if (hasPermission(tmp, roles)) {
+      if (tmp.children) {
+        tmp.children = filterAsyncRoute(tmp.children, roles)
+      }
+      res.push(tmp)
+    }
+  })
+  return res
+}
 
 const state = {
   token: '',
   name: '',
   avatar: '',
   introduction: '',
-  roles: []
+  roles: [],
+  routes: [],
+  addRoutes: []
 }
 
 const mutations = {
@@ -24,6 +50,10 @@ const mutations = {
   },
   SET_ROLES: (state, payload) => {
     state.roles = payload
+  },
+  SET_ROUTES: (state, routes) => {
+    state.addRoutes = routes
+    state.routes = constantRoutes.concat(routes)
   }
 }
 const actions = {
@@ -59,6 +89,21 @@ const actions = {
       }).catch(error => {
         reject(error)
       })
+    })
+  },
+  generateRoutes: ({ commit }, roles) => {
+    return new Promise(resolve => {
+      const accessedRoutes = filterAsyncRoute(asyncRoutes, roles)
+      commit('SET_ROUTES', accessedRoutes)
+      resolve(accessedRoutes)
+    })
+  },
+  resetToken: ({ commit }) => {
+    return new Promise(resolve => {
+      commit('SET_TOKEN', '')
+      commit('SET_ROLES', [])
+      remveToken()
+      resolve()
     })
   }
 }

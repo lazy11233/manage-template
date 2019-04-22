@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import constantRoutes from './router'
+import { constantRoutes } from './router'
 import store from '@/store'
 import NProgress from 'nprogress'
 import { setTilte } from '@/lib/util'
@@ -27,16 +27,22 @@ router.beforeEach(async (to, from, next) => {
       next(`/`)
       NProgress.done()
     } else {
-      // 用户要去的不是登录页面，校验用户权限
-      try {
-        // 取得用户权限
-        const { roles } = await store.dispatch('getInfo')
-        // 取得需要动态添加的路由列表
-        const { accessedRoutes } = await store.dispatch('generateRoutes', roles)
-        // TODO delete it
-        console.log(accessedRoutes)
-      } catch (error) {
-        console.log(error)
+      const hasRoles = store.getters.roles && store.getters.roles.length > 0
+      if (hasRoles) {
+        next()
+      } else {
+        try {
+          // 取得用户权限
+          const { roles } = await store.dispatch('getInfo')
+          // 取得需要动态添加的路由列表
+          const accessedRoutes = await store.dispatch('generateRoutes', roles)
+          router.addRoutes(accessedRoutes)
+          next({ ...to, replace: true })
+        } catch (error) {
+          await store.dispatch('resetToken')
+          next(`/login?redirect=${to.path}`)
+          NProgress.done()
+        }
       }
     }
   } else {
@@ -45,8 +51,13 @@ router.beforeEach(async (to, from, next) => {
       next()
     } else {
       next(`/login?redirect=${to.path}`)
+      NProgress.done()
     }
   }
+})
+
+router.afterEach(() => {
+  NProgress.done()
 })
 
 export default router

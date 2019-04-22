@@ -1,12 +1,20 @@
-const constantRoutes = [
+import Layout from '@/views/layout/index'
+export const constantRoutes = [
   {
     path: '/',
-    name: 'home',
-    component: () => import('@/views/Home'),
-    meta: {
-      title: '管理平台首页',
-      icon: ''
-    }
+    component: Layout,
+    children: [
+      {
+        path: 'dashboard',
+        component: () => import('@/views/dashboard/index.vue'),
+        name: 'Dashboard',
+        meta: {
+          title: 'dashboard',
+          icon: 'dashboard',
+          noCache: true
+        }
+      }
+    ]
   },
   {
     path: '/login',
@@ -25,7 +33,39 @@ const constantRoutes = [
       title: '关于',
       icon: ''
     }
+  },
+  {
+    path: '/404',
+    name: '404',
+    component: () => import('@/views/Error/error_404.vue')
   }
 ]
 
-export default constantRoutes
+export const asyncRoutes = [
+  {
+    path: '/admin',
+    name: 'admin',
+    component: () => import('@/views/admin.vue'),
+    meta: {
+      title: '管理员页面',
+      icon: '',
+      roles: ['admin']
+    }
+  },
+  {
+    path: '/editor',
+    name: 'editor',
+    component: () => import('@/views/editor.vue'),
+    meta: {
+      title: '编辑页面',
+      icon: '',
+      roles: ['editor']
+    }
+  },
+  {
+    path: '/visitor',
+    name: 'visitor',
+    component: () => import('@/views/visitor.vue')
+  },
+  { path: '*', redirect: '/404', hidden: true }
+]

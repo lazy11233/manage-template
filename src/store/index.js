@@ -7,7 +7,6 @@ import mutations from './mutations'
 import actions from './actions'
 import user from './modules/user'
 import app from './modules/app'
-import permission from './modules/permission'
 
 import saveInLocal from './plugin/saveInLocal'
 
@@ -19,9 +18,8 @@ const store = new Vuex.Store({
   mutations,
   actions,
   modules: {
-    user,
     app,
-    permission
+    user
   },
   plugins: [
     saveInLocal

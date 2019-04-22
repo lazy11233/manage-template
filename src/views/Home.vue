@@ -3,12 +3,15 @@
     <HelloWorld msg="Welcome to Your Vue.js App"/>
     <el-button type="primary" size="mini" @click="handleClick">点击获取用户信息</el-button>
     <svg-icon icon-class="home"></svg-icon>
+
+    <img :src="imgUrl" alt="">
   </div>
 </template>
 
 <script>
 import HelloWorld from '@/components/HelloWorld'
 import { getUserInfo } from '@/api/user'
+
 
 export default {
   name: 'home',
@@ -20,6 +23,11 @@ export default {
       getUserInfo('editor').then(res => {
         console.log(res)
       })
+    }
+  },
+  computed: {
+    imgUrl () {
+      return ''
     }
   }
 }
